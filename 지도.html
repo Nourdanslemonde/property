@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>광나루로6길 52 — 주변 상가 임대 시세 지도</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; font-family: "Malgun Gothic", "맑은 고딕", sans-serif; }
+  #map { width: 100%; height: 100%; }
+  .panel {
+    position: absolute; top: 12px; right: 12px; z-index: 1000;
+    background: rgba(255,255,255,0.96); padding: 14px 16px; border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25); max-width: 330px; font-size: 13px; line-height: 1.5;
+  }
+  .panel h2 { margin: 0 0 6px; font-size: 15px; }
+  .panel .sub { color: #555; font-size: 12px; margin-bottom: 10px; }
+  .legend div { margin: 3px 0; }
+  .dot { display: inline-block; width: 13px; height: 13px; border-radius: 50%; margin-right: 6px; vertical-align: middle; border:1px solid rgba(0,0,0,0.2); }
+  .star { display:inline-block; width:13px; height:13px; margin-right:6px; vertical-align:middle; }
+  .note { margin-top: 10px; font-size: 11px; color: #777; border-top: 1px solid #eee; padding-top: 8px; }
+  .leaflet-popup-content { font-size: 13px; line-height: 1.5; }
+  .leaflet-popup-content b { color: #c0392b; }
+  .rank-badge { display:inline-block; width:20px; height:20px; line-height:20px; text-align:center;
+    border-radius:50%; color:#fff; font-weight:bold; font-size:12px; margin-right:6px; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="panel">
+  <h2>성수동 상권 평당 임대료 순위 지도</h2>
+  <div class="sub">광나루로6길 52 (성수동2가) 기준 · 2026-06 · 1층 기준</div>
+  <div class="legend">
+    <div><span class="star">⭐</span><b>대상지</b> (검토 물건)</div>
+    <div style="margin-top:6px; font-weight:bold;">평당 월임대료(높을수록 진함)</div>
+    <div><span class="dot" style="background:#7b0000"></span>1위 연무장길 100만+</div>
+    <div><span class="dot" style="background:#c0392b"></span>2위 성수역축 40~70만</div>
+    <div><span class="dot" style="background:#e67e22"></span>3위 성수이로·카페거리 30~55만</div>
+    <div><span class="dot" style="background:#f1c40f"></span>4위 뚝섬역·수제화 30~50만</div>
+    <div><span class="dot" style="background:#2ecc71"></span>5위 서울숲·아틀리에길 25~45만</div>
+    <div><span class="dot" style="background:#3498db"></span>6위 대상지 외곽 15~30만</div>
+  </div>
+  <div class="note">
+    원 = 대상지 반경 300m(안)/500m(밖) 도보권.<br>
+    <b>연무장길만 공표 수치</b>, 2~6위 평당값·마커 위치는 입지·공실 기반 <b>개략 추정/배치</b>.
+  </div>
+</div>
+<script>
+  var target = [37.5457639, 127.0645594];
+  var map = L.map('map').setView([37.5450, 127.0540], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
+
+  // 반경 원
+  L.circle(target, {radius: 300, color:'#c0392b', weight:1, fillOpacity:0.05}).addTo(map);
+  L.circle(target, {radius: 500, color:'#c0392b', weight:1, dashArray:'5,5', fill:false}).addTo(map);
+
+  // 팝업을 클릭 없이 항상 띄워두는 헬퍼 (여러 개 동시 표시)
+  function showPopup(ll, html, offsetY){
+    L.popup({autoClose:false, closeOnClick:false, closeButton:false,
+      autoPan:false, offset:[0, offsetY||0], className:'always-pop'})
+      .setLatLng(ll).setContent(html).openOn(map);
+  }
+
+  // 대상지 — 별 모양 큰 마커 + 항상 열린 팝업
+  L.marker(target, {
+    icon: L.divIcon({className:'', html:'<div style="font-size:30px; line-height:30px;">⭐</div>',
+      iconSize:[30,30], iconAnchor:[15,15]})
+  }).addTo(map);
+  showPopup(target,
+    '<b>⭐ 대상지 — 광나루로6길 52</b><br>성수동2가 (동쪽 끝)<br>연무장길 코어에서 동쪽 약 700~800m<br>30평 신축 1층 추정: 평당 20~35만/월 (월 600만~1,050만)', -14);
+
+  // 상권 순위 마커 (평당 가격대별 색상)
+  var zones = [
+    { ll:[37.5432,127.0565], c:'#7b0000', r:1, name:'연무장길 코어',
+      pyung:'1층 평당 100만+/월 (극단 280만)',
+      why:'팝업·플래그십 성지. 디올·대형카페 집중. 팝업 단기임대가 상임법 우회 → 호가 폭등. 메인스트리트 집객 최강' },
+    { ll:[37.5446,127.0560], c:'#c0392b', r:2, name:'성수역축 (무신사 캠퍼스)',
+      pyung:'1층 평당 40~70만/월 (추정)',
+      why:'앵커테넌트(무신사·SM) 배후 유동인구 + 2호선 역세권 가시성. 프랜차이즈 지불력' },
+    { ll:[37.5461,127.0552], c:'#e67e22', r:3, name:'성수이로·카페거리',
+      pyung:'1층 평당 30~55만/월 (추정)',
+      why:'카페 밀집 메인동선. 연무장길 확산 수혜, 보행 집객 양호' },
+    { ll:[37.5473,127.0473], c:'#f1c40f', r:4, name:'뚝섬역·수제화거리',
+      pyung:'1층 평당 30~50만/월 (추정)',
+      why:'공실률 최저(소형 4.1%·중대형 2.6%) = 수요 최강. 블루보틀 1호점 앵커' },
+    { ll:[37.5458,127.0420], c:'#2ecc71', r:5, name:'서울숲길·아틀리에길',
+      pyung:'1층 평당 25~45만/월 (추정)',
+      why:'공방·카페 감성거리. 분위기 좋지만 동선 분산 → 임대료 완만' },
+    { ll:[37.5450,127.0625], c:'#3498db', r:6, name:'대상지 외곽 (성수2가 동쪽)',
+      pyung:'1층 평당 15~30만/월 (추정)',
+      why:'연무장길 코어 밖 700~800m. 준공업·지식산업센터 혼재. 확산 다음 후보 vs 현 수요 약함' }
+  ];
+
+  zones.forEach(function(z){
+    L.circleMarker(z.ll, {radius:13, color:'#fff', weight:2, fillColor:z.c, fillOpacity:0.95})
+      .addTo(map)
+      .bindTooltip(String(z.r), {permanent:true, direction:'center', className:'rank-tip'});
+    showPopup(z.ll,
+      '<span class="rank-badge" style="background:'+z.c+'">'+z.r+'</span><b>'+z.name+'</b><br><b>'+z.pyung+'</b><br><span style="color:#555">'+z.why+'</span>', -14);
+  });
+</script>
+<style>
+  .rank-tip { background:transparent; border:none; box-shadow:none; color:#fff; font-weight:bold; font-size:12px; }
+  .always-pop .leaflet-popup-content { margin:8px 10px; width:200px !important; font-size:12px; line-height:1.45; }
+  .always-pop .leaflet-popup-content-wrapper { border-radius:8px; }
+</style>
+</body>
+</html>
