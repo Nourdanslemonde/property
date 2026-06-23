@@ -53,6 +53,28 @@
     <b>연무장길만 공표 수치</b>, 2~6위 평당값·마커 위치는 입지·공실 기반 <b>개략 추정/배치</b>.
   </div>
 </div>
+
+<div class="listings">
+  <h2>🔗 실매물·공고 바로가기</h2>
+  <div class="sub">성수동2가 라이브 공고 (새 창)</div>
+  <div class="portals">
+    <a href="https://new.land.naver.com/offices?ms=37.5457639,127.0645594,16" target="_blank" rel="noopener">네이버부동산</a>
+    <a href="https://www.nemoapp.kr/" target="_blank" rel="noopener">네모(상업용)</a>
+    <a href="https://zippoom.com/browse/서울-성동구-성수동2가" target="_blank" rel="noopener">집품</a>
+    <a href="https://www.disco.re/" target="_blank" rel="noopener">디스코</a>
+    <a href="https://land.daara.co.kr/" target="_blank" rel="noopener">다아라(지산)</a>
+  </div>
+  <div class="seed">
+    <div class="seed-title">확인된 실매물(네모, 2026-06)</div>
+    <a href="https://www.nemoapp.kr/share/store/883134" target="_blank" rel="noopener">상가 · 보7,000/월500/권2.4억 (성수역 9분)</a>
+    <a href="https://www.nemoapp.kr/share/store/812985" target="_blank" rel="noopener">상가 · 보4,000/월330/권4,000</a>
+    <a href="https://www.nemoapp.kr/share/store/935354" target="_blank" rel="noopener">상가 · 보3,000/월200</a>
+    <a href="https://www.nemoapp.kr/share/store/904087" target="_blank" rel="noopener">상가 · 보1,000/월100 (소형)</a>
+    <a href="https://www.nemoapp.kr/share/office/740018" target="_blank" rel="noopener">사무실 10.3평 · 보1,500/월150</a>
+  </div>
+  <div class="note" style="border-top:1px solid #eee;">호가는 실시간 변동·중복·누락 가능. 계약 전 현장 중개사 확인 필수.</div>
+</div>
+
 <script>
   var target = [37.5457639, 127.0645594];
   var map = L.map('map').setView([37.5450, 127.0540], 15);
@@ -110,6 +132,22 @@
   });
 </script>
 <style>
+  .listings {
+    position: absolute; bottom: 12px; left: 12px; z-index: 1000;
+    background: rgba(255,255,255,0.96); padding: 12px 14px; border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25); max-width: 280px; font-size: 12px; line-height: 1.5;
+  }
+  .listings h2 { margin: 0 0 4px; font-size: 14px; }
+  .listings .sub { color: #555; font-size: 11px; margin-bottom: 8px; }
+  .listings .portals { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 9px; }
+  .listings .portals a {
+    background: #2c3e50; color: #fff; text-decoration: none; padding: 4px 8px;
+    border-radius: 6px; font-size: 11px; white-space: nowrap;
+  }
+  .listings .portals a:hover { background: #1a252f; }
+  .listings .seed-title { font-weight: bold; margin-bottom: 4px; font-size: 11px; color: #2c3e50; }
+  .listings .seed a { display: block; color: #c0392b; text-decoration: none; margin: 2px 0; }
+  .listings .seed a:hover { text-decoration: underline; }
   .rank-tip { background:transparent; border:none; box-shadow:none; color:#fff; font-weight:bold; font-size:12px; }
   .always-pop .leaflet-popup-content { margin:8px 10px; width:200px !important; font-size:12px; line-height:1.45; }
   .always-pop .leaflet-popup-content-wrapper { border-radius:8px; }
